@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider             = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password_hash String
+  crm_coren     String?
+  name          String
+  created_at    DateTime  @default(now())
+  
+  patients      Patient[]
+}
+
+model Patient {
+  id                     String   @id @default(uuid())
+  name                   String
+  cpf                    String   @unique
+  birth_date             DateTime
+  is_active              Boolean  @default(true)
+  created_at             DateTime @default(now())
+  
+  user_id                String
+  created_by             User     @relation(fields: [user_id], references: [id])
+
+  // Features Clínicas base
+  gestacoes              Float
+  glicemia               Float
+  pressao                Float
+  espessura_pele         Float
+  insulina               Float
+  imc                    Float
+  historico_familiar     Float
+  idade                  Float
+
+  // Resultados da Predição (podem ser nulos até a predição rodar)
+  predicao_probabilidade Float?
+  predicao_risco         String?  // Ex: "ALTO", "MODERADO", "BAIXO"
+  predicao_data          DateTime?
+}
