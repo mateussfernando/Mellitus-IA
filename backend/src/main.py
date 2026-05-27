@@ -1,27 +1,32 @@
 from fastapi import FastAPI
-from prisma import Prisma
+from src.database import prisma
+from src.core.model_loader import load_model
+from src.routes.auth import router as auth_router
+from src.routes.patients import router as patients_router
 
 # Inicialização do FastAPI
 app = FastAPI(
     title="Mellitus.IA API",
-    description="API de backend para suporte a predições de Diabetes Tipo 2",
+    description="API de backend protegida para predições precisas de Diabetes Tipo 2",
     version="1.0.0"
 )
 
-# Instância global do BD Prisma
-prisma = Prisma()
-
 @app.on_event("startup")
 async def startup():
-    # Conecta ao banco de dados assim que o servidor iniciar
+    # Conecta ao banco de dados e carrega o modelo de IA
     await prisma.connect()
-    print("✅ Banco de dados conectado com sucesso!")
+    load_model()
+    print("✅ Banco de dados e IA conectados com sucesso!")
 
 @app.on_event("shutdown")
 async def shutdown():
-    # Desconecta do banco de dados quando o servidor parar
+    # Desconecta do banco de dados
     await prisma.disconnect()
 
 @app.get("/")
 async def root():
-    return {"message": "A API do Mellitus.IA está rodando normalmente!"}
+    return {"message": "A API do Mellitus.IA está no ar e protegida!"}
+
+# Integração das rotas (Auth e CRUD)
+app.include_router(auth_router)
+app.include_router(patients_router)
