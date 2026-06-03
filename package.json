@@ -1,0 +1,24 @@
+{
+  "name": "mellitus-ia",
+  "version": "1.0.0",
+  "description": "**Mellitus-IA** é um sistema de Inteligência Artificial focado na predição de probabilidade e risco de **Diabetes Tipo 2**. A aplicação conta com um modelo Machine Learning próprio consumido através de uma API estruturada em **FastAPI** e banco de dados **PostgreSQL** orquestrado pelo **Prisma ORM**. Todo o sistema de requisições é **protegido por JWT**.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateussfernando/Mellitus-IA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mateussfernando/Mellitus-IA/issues"
+  },
+  "homepage": "https://github.com/mateussfernando/Mellitus-IA#readme",
+  "dependencies": {
+    "onnxruntime-node": "^1.26.0"
+  }
+}
