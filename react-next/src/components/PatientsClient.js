@@ -7,13 +7,13 @@ import EditPatientModal from '@/components/EditPatientModal'
 
 function StatCard({ label, value, color, icon }) {
   return (
-    <div className="bg-surface rounded-xl border border-border p-5 flex items-center gap-4">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
+    <div className="bg-surface rounded-xl border border-border p-3 md:p-5 flex items-center gap-3 md:gap-4">
+      <div className={`w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
         {icon}
       </div>
       <div>
-        <p className="text-2xl font-bold text-text leading-none">{value}</p>
-        <p className="text-xs text-text-secondary mt-1">{label}</p>
+        <p className="text-xl md:text-2xl font-bold text-text leading-none">{value}</p>
+        <p className="text-[10px] md:text-xs text-text-secondary mt-1">{label}</p>
       </div>
     </div>
   )
@@ -35,28 +35,29 @@ export default function PatientsClient({ patients, stats }) {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8 pt-16 md:pt-8">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-text">Pacientes</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-text">Pacientes</h1>
           <p className="text-sm text-text-secondary mt-1">Gerenciamento e predição de risco</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark
+          className="cursor-pointer flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark
                      text-white text-sm font-semibold transition-colors shadow-sm"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          Novo Paciente
+          <span className="hidden sm:inline">Novo Paciente</span>
+          <span className="sm:hidden">Novo</span>
         </button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard
           label="Total de pacientes"
           value={stats.total}
@@ -85,7 +86,8 @@ export default function PatientsClient({ patients, stats }) {
 
       {/* Tabela */}
       <div className="bg-surface rounded-xl border border-border overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="border-b border-border bg-bg">
               <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Paciente</th>
@@ -142,6 +144,7 @@ export default function PatientsClient({ patients, stats }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       <NewPatientModal
