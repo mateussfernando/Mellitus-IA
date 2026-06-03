@@ -1,7 +1,7 @@
 import ort  from 'onnxruntime-node'
 import path from 'path'
 
-const MODEL_PATH = path.join(process.cwd(), '..', 'modelo', 'mellitus_modelo.onnx')
+const MODEL_PATH = path.join(process.cwd(), 'model', 'mellitus_modelo.onnx')
 
 let _session = null
 
