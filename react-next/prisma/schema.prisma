@@ -12,6 +12,11 @@ enum Role {
   USER
 }
 
+enum Sexo {
+  MASCULINO
+  FEMININO
+}
+
 model User {
   id         Int      @id @default(autoincrement())
   email      String   @unique
@@ -23,42 +28,51 @@ model User {
   created_at DateTime @default(now())
 }
 
-// Dados anonimizados coletados para re-treino do modelo (sem nenhum identificador)
-model TrainingData {
-  id                     Int      @id @default(autoincrement())
-  created_at             DateTime @default(now())
-
-  gestacoes              Float?
-  glicemia               Float
-  pressao                Float
-  espessura_pele         Float?
-  insulina               Float?
-  imc                    Float
-  historico_familiar     Float?
-  idade                  Float
-
-  predicao_probabilidade Float?
-  predicao_risco         String?
+model Patient {
+  id            Int            @id @default(autoincrement())
+  name          String
+  sexo          Sexo
+  birth_date    DateTime
+  is_active     Boolean        @default(true)
+  created_at    DateTime       @default(now())
+  consultations Consultation[]
 }
 
-model Patient {
+model Consultation {
   id                     Int       @id @default(autoincrement())
-  name                   String
-  cpf                    String    @unique
-  birth_date             DateTime
-  is_active              Boolean   @default(true)
+  patient_id             Int
+  patient                Patient   @relation(fields: [patient_id], references: [id])
   created_at             DateTime  @default(now())
 
-  gestacoes              Float?
   glicemia               Float
   pressao                Float
+  imc                    Float
+  idade                  Float
   espessura_pele         Float?
   insulina               Float?
-  imc                    Float
   historico_familiar     Float?
-  idade                  Float
+  gestacoes              Float?    // null para MASCULINO
 
   predicao_probabilidade Float?
   predicao_risco         String?
   predicao_data          DateTime?
+}
+
+// Dados anonimizados para re-treino do modelo (sem identificadores)
+model TrainingData {
+  id                     Int      @id @default(autoincrement())
+  created_at             DateTime @default(now())
+
+  sexo                   String?  // 'MASCULINO' | 'FEMININO'
+  gestacoes              Float?
+  glicemia               Float
+  pressao                Float
+  espessura_pele         Float?
+  insulina               Float?
+  imc                    Float
+  historico_familiar     Float?
+  idade                  Float
+
+  predicao_probabilidade Float?
+  predicao_risco         String?
 }
