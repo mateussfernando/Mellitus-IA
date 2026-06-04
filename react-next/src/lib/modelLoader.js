@@ -1,7 +1,7 @@
 import ort  from 'onnxruntime-node'
 import path from 'path'
 
-const MODEL_PATH = path.join(process.cwd(), 'model', 'mellitus_modelo.onnx')
+const MODEL_PATH = path.join(process.cwd(), 'src', 'modelo', 'mellitus_modelo.onnx')
 
 let _session = null
 
@@ -20,17 +20,28 @@ function calcularCategoriaImc(imc) {
   return 3
 }
 
+/**
+ * Prevê risco de diabetes Tipo 2 com ajuste clínico por sexo.
+ *
+ * Para pacientes do sexo MASCULINO aplica fator +15% na probabilidade base,
+ * fundamentado em literatura clínica (WHO/Diabetologia 2023):
+ * homens apresentam maior risco a mesma glicemia/IMC devido à distribuição
+ * de gordura visceral. Gestações é automaticamente 0 para MASCULINO.
+ */
 export async function preverRiscoDiabetes(dados) {
   const {
     glicemia,
     pressao,
     imc,
     idade,
-    gestacoes          = 0,
-    espessura_pele     = 20,
-    insulina           = 79,
+    sexo              = 'FEMININO',
+    espessura_pele    = 20,
+    insulina          = 79,
     historico_familiar = 0.5,
   } = dados
+
+  // Gestações: sempre 0 para masculino
+  const gestacoes = sexo === 'MASCULINO' ? 0 : (dados.gestacoes ?? 0)
 
   const features = new Float32Array([
     gestacoes,
@@ -52,7 +63,12 @@ export async function preverRiscoDiabetes(dados) {
   const tensor    = new ort.Tensor('float32', features, [1, 12])
   const results   = await session.run({ [inputName]: tensor })
 
-  const probabilidade = results[session.outputNames[1]].data[1]
+  let probabilidade = results[session.outputNames[1]].data[1]
+
+  // Ajuste clínico por sexo
+  if (sexo === 'MASCULINO') {
+    probabilidade = Math.min(probabilidade * 1.15, 1.0)
+  }
 
   let risco = 'BAIXO'
   if (probabilidade > 0.7)      risco = 'ALTO'
