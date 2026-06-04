@@ -10,13 +10,21 @@ export default async function DashboardPage() {
   const patients = await prisma.patient.findMany({
     where: { is_active: true },
     orderBy: { created_at: 'desc' },
+    include: {
+      consultations: {
+        orderBy: { created_at: 'desc' },
+        take: 1,
+      },
+    },
   })
+
+  const lastConsultations = patients.map(p => p.consultations[0]).filter(Boolean)
 
   const stats = {
     total:    patients.length,
-    alto:     patients.filter(p => p.predicao_risco === 'ALTO').length,
-    moderado: patients.filter(p => p.predicao_risco === 'MODERADO').length,
-    baixo:    patients.filter(p => p.predicao_risco === 'BAIXO').length,
+    alto:     lastConsultations.filter(c => c.predicao_risco === 'ALTO').length,
+    moderado: lastConsultations.filter(c => c.predicao_risco === 'MODERADO').length,
+    baixo:    lastConsultations.filter(c => c.predicao_risco === 'BAIXO').length,
   }
 
   return <PatientsClient patients={patients} stats={stats} />
