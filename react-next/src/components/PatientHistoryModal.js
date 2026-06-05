@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import ExamUploadModal from '@/components/ExamUploadModal'
+import { useRouter } from 'next/navigation'
 import PatientInsightsPanel from '@/components/PatientInsightsPanel'
 
 function calcAge(birthDate) {
@@ -10,8 +10,8 @@ function calcAge(birthDate) {
 }
 
 export default function PatientHistoryModal({ patient, onClose }) {
-  const [showUpload, setShowUpload] = useState(false)
   const [activeTab, setActiveTab] = useState('exames')
+  const router = useRouter()
   const examResults = patient.examResults ?? []
 
   return (
@@ -35,13 +35,13 @@ export default function PatientHistoryModal({ patient, onClose }) {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setShowUpload(true)}
+              onClick={() => router.push(`/dashboard/pacientes/${patient.id}/exame`)}
               className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-semibold transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              Upload
+              Novo exame
             </button>
             <button onClick={onClose} className="cursor-pointer text-text-muted hover:text-text transition-colors p-1 rounded-lg hover:bg-bg">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -87,7 +87,12 @@ export default function PatientHistoryModal({ patient, onClose }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-3-3v6M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z" />
               </svg>
               <p className="text-sm">Nenhum exame registrado.</p>
-              <p className="text-xs text-text-muted mt-1">Upload de laudos em breve</p>
+              <button
+                onClick={() => router.push(`/dashboard/pacientes/${patient.id}/exame`)}
+                className="cursor-pointer mt-3 text-primary text-sm font-semibold hover:underline"
+              >
+                Adicionar primeiro exame
+              </button>
             </div>
           ) : (
             <div className="divide-y divide-border">
@@ -116,10 +121,6 @@ export default function PatientHistoryModal({ patient, onClose }) {
           <div className="overflow-y-auto flex-1 p-6">
             <PatientInsightsPanel patient={patient} />
           </div>
-        )}
-
-        {showUpload && (
-          <ExamUploadModal patient={patient} onClose={() => setShowUpload(false)} />
         )}
       </div>
     </div>
