@@ -1,11 +1,11 @@
 import prisma from '@/lib/prisma'
 import { withAuth } from '@/lib/middleware'
 
-export const GET = withAuth(async (_request, context) => {
+export const GET = withAuth(async (_request, context, session) => {
   try {
     const { id } = await context.params
-    const patient = await prisma.patient.findUnique({
-      where: { id: Number(id) },
+    const patient = await prisma.patient.findFirst({
+      where: { id: Number(id), user_id: Number(session.user.id) },
       include: {
         examResults: { orderBy: { created_at: 'desc' } },
       },
@@ -19,14 +19,16 @@ export const GET = withAuth(async (_request, context) => {
   }
 })
 
-export const PUT = withAuth(async (request, context) => {
+export const PUT = withAuth(async (request, context, session) => {
   try {
     const { id }                  = await context.params
     const { name, sexo, is_active } = await request.json()
 
-    const patient = await prisma.patient.findUnique({ where: { id: Number(id) } })
+    const patient = await prisma.patient.findFirst({
+      where: { id: Number(id), user_id: Number(session.user.id) },
+    })
     if (!patient) {
-      return Response.json({ detail: 'Paciente não existe.' }, { status: 404 })
+      return Response.json({ detail: 'Paciente não encontrado.' }, { status: 404 })
     }
 
     const data = {}

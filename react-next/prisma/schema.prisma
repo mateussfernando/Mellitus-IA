@@ -18,24 +18,29 @@ enum Sexo {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
   password   String
   crm        String?
   name       String
-  role       Role     @default(USER)
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
+  role       Role      @default(USER)
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  patients   Patient[]
 }
 
 model Patient {
   id            Int            @id @default(autoincrement())
+  user_id       Int
+  user          User           @relation(fields: [user_id], references: [id])
   name          String
   sexo          Sexo
   birth_date    DateTime
   is_active     Boolean        @default(true)
   created_at    DateTime       @default(now())
   examResults   ExamResult[]
+
+  @@index([user_id])
 }
 
 model ExamResult {

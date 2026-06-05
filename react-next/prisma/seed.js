@@ -1,6 +1,7 @@
 // Seed de demonstração: pacientes com históricos de exames variados.
 // Rode com:  npx prisma db seed
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcryptjs')
 const prisma = new PrismaClient()
 
 const DAY = 24 * 60 * 60 * 1000
@@ -80,14 +81,30 @@ const PACIENTES = [
 ]
 
 async function main() {
-  console.log('Limpando pacientes e exames existentes…')
-  await prisma.examResult.deleteMany({})
-  await prisma.patient.deleteMany({})
+  // Os pacientes pertencem a um usuário. Usa o primeiro usuário existente
+  // (provavelmente a sua conta); se não houver nenhum, cria um de demonstração.
+  let user = await prisma.user.findFirst({ orderBy: { id: 'asc' } })
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        name: 'Médico Demonstração',
+        email: 'demo@mellitus.ia',
+        password: bcrypt.hashSync('demo12345', 10),
+        crm: '00000',
+      },
+    })
+    console.log('Nenhum usuário encontrado — criado: demo@mellitus.ia / senha: demo12345')
+  }
+  console.log(`Associando pacientes ao usuário: ${user.email} (id ${user.id})`)
+
+  console.log('Limpando pacientes e exames existentes desse usuário…')
+  await prisma.examResult.deleteMany({ where: { patient: { user_id: user.id } } })
+  await prisma.patient.deleteMany({ where: { user_id: user.id } })
 
   let totalExames = 0
   for (const p of PACIENTES) {
     const patient = await prisma.patient.create({
-      data: { name: p.name, sexo: p.sexo, birth_date: birthFromAge(p.age) },
+      data: { name: p.name, sexo: p.sexo, birth_date: birthFromAge(p.age), user_id: user.id },
     })
 
     for (const ex of p.exams) {

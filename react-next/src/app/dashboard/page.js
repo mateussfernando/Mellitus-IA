@@ -7,8 +7,10 @@ export default async function DashboardPage() {
   const session = await auth()
   if (!session) redirect('/login')
 
+  const userId = Number(session.user.id)
+
   const patients = await prisma.patient.findMany({
-    where: { is_active: true },
+    where: { is_active: true, user_id: userId },
     orderBy: { created_at: 'desc' },
     include: {
       examResults: { orderBy: { created_at: 'desc' }, take: 1 },
@@ -20,9 +22,10 @@ export default async function DashboardPage() {
   inicioMes.setDate(1)
   inicioMes.setHours(0, 0, 0, 0)
 
+  const examFilter = { patient: { user_id: userId } }
   const [totalExames, examesMes] = await Promise.all([
-    prisma.examResult.count(),
-    prisma.examResult.count({ where: { created_at: { gte: inicioMes } } }),
+    prisma.examResult.count({ where: examFilter }),
+    prisma.examResult.count({ where: { ...examFilter, created_at: { gte: inicioMes } } }),
   ])
 
   const stats = {
