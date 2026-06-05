@@ -29,7 +29,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,  // 30 dias — mantém o login até o usuário sair ou expirar
+    updateAge: 24 * 60 * 60,    // renova o token uma vez por dia de uso
+  },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     jwt({ token, user }) {
