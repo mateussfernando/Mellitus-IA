@@ -232,10 +232,7 @@ export default function ExamEntryClient({ patient }) {
                   <input id="file-input" type="file" hidden onChange={e => handleFileSelect(e.target.files?.[0])} accept="image/*,.pdf" />
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <SparkIcon className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-[11px] text-slate-400">Leitura automática por Claude Sonnet 4.6</span>
-                </div>
+                <p className="text-[11px] text-slate-400">Os valores são extraídos automaticamente para sua conferência.</p>
 
                 {preview && (
                   // eslint-disable-next-line @next/next/no-img-element -- preview de data-URL local
@@ -350,14 +347,6 @@ function Spinner() {
     <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
-    </svg>
-  )
-}
-
-function SparkIcon({ className }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" />
     </svg>
   )
 }

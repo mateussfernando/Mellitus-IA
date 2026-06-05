@@ -80,7 +80,7 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg">
           <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3.5 py-1.5 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-primary text-xs font-semibold tracking-wide">Powered by IA Generativa</span>
+            <span className="text-primary text-xs font-semibold tracking-wide">IA aplicada à saúde</span>
           </div>
 
           <h1 className="text-5xl font-bold text-white leading-[1.15] mb-6">
@@ -91,7 +91,7 @@ export default function LoginPage() {
 
           <p className="text-white/60 text-lg leading-relaxed mb-10">
             Escaneie laudos, acompanhe a evolução dos seus pacientes e receba
-            insights clínicos que cruzam todos os exames — revelando padrões
+            análises clínicas que cruzam todos os exames — revelando padrões
             que passariam despercebidos.
           </p>
 

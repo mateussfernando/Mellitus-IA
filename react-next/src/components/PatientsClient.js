@@ -183,7 +183,7 @@ export default function PatientsClient({ patients, stats }) {
                             className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-violet-700 bg-violet-100 hover:bg-violet-600 hover:text-white transition-colors"
                           >
                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" /></svg>
-                            Insights
+                            Análise
                           </button>
                           <button
                             onClick={() => setEditingPatient(p)}

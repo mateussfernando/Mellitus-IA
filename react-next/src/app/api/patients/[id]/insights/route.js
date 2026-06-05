@@ -36,7 +36,7 @@ export const GET = withAuth(async (_request, context, session) => {
         insights: [
           {
             tipo: 'info',
-            descricao: 'Paciente sem exames para análise. Realize o upload de laudos para gerar insights.',
+            descricao: 'Paciente sem exames para análise. Adicione exames para gerar a análise.',
             urgencia: 'info',
           },
         ],

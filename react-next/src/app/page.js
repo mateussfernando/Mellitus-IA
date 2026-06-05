@@ -18,8 +18,8 @@ const STEPS = [
   },
   {
     n: '03',
-    tit: 'Receba os insights',
-    desc: 'A IA cruza todo o histórico e revela tendências e correlações entre exames.',
+    tit: 'Receba a análise',
+    desc: 'O sistema cruza todo o histórico e revela tendências e correlações entre exames.',
   },
 ]
 
@@ -132,8 +132,8 @@ export default function Home() {
               </h1>
 
               <p className="hero-sub text-white/60 text-base md:text-lg leading-relaxed max-w-xl mb-8">
-                Escaneie laudos, acompanhe a evolução dos seus pacientes e receba insights
-                clínicos que cruzam todos os exames — apoiando decisões mais precisas.
+                Escaneie laudos, acompanhe a evolução dos seus pacientes e receba uma análise
+                clínica que cruza todos os exames — apoiando decisões mais precisas.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -149,7 +149,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Mockup de insight */}
+            {/* Mockup de análise */}
             <div className="hero-card relative">
               <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 backdrop-blur-sm shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
@@ -172,11 +172,6 @@ export default function Home() {
                     text="LDL elevado coincide com TSH alto — investigar hipotireoidismo." />
                   <InsightLine color="text-emerald-300" bg="bg-emerald-400/10" label="Sugestão"
                     text="Solicitar HbA1c para confirmar evolução para pré-diabetes." />
-                </div>
-
-                <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-white/10">
-                  <SparkIcon className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-white/40 text-[11px] font-medium">Gerado por Claude Sonnet 4.6</span>
                 </div>
               </div>
               <div className="absolute -inset-3 bg-primary/10 blur-2xl rounded-full -z-10" />
@@ -202,7 +197,7 @@ export default function Home() {
         <section className="px-5 md:px-16 max-w-7xl mx-auto py-16 md:py-24">
           <div className="reveal text-center mb-12 md:mb-16">
             <p className="text-primary text-xs font-bold uppercase tracking-widest mb-3">Como funciona</p>
-            <h2 className="text-2xl md:text-4xl font-bold text-white">Do laudo ao insight em 3 passos</h2>
+            <h2 className="text-2xl md:text-4xl font-bold text-white">Do laudo à análise em 3 passos</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {STEPS.map(s => (
@@ -272,11 +267,7 @@ export default function Home() {
 
         {/* Rodapé */}
         <footer className="border-t border-white/5 mt-8">
-          <div className="flex flex-col items-center gap-4 py-8 px-6">
-            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
-              <SparkIcon className="w-4 h-4 text-primary" />
-              <span className="text-white/60 text-xs font-semibold">Powered by Claude Sonnet 4.6 · Anthropic</span>
-            </div>
+          <div className="py-8 px-6">
             <p className="text-center text-white/25 text-xs">
               Mellitus.IA © {new Date().getFullYear()} — Projeto de uso clínico e educacional.
               <br className="sm:hidden" />
@@ -296,13 +287,5 @@ function InsightLine({ color, bg, label, text }) {
       <span className={`${color} text-[10px] font-bold uppercase tracking-wide shrink-0 mt-0.5 w-16`}>{label}</span>
       <p className="text-white/70 text-xs leading-relaxed">{text}</p>
     </div>
-  )
-}
-
-function SparkIcon({ className }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" />
-    </svg>
   )
 }
