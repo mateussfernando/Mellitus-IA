@@ -8,7 +8,9 @@ export default async function NovoExamePage({ params }) {
   if (!session) redirect('/login')
 
   const { id } = await params
-  const patient = await prisma.patient.findUnique({ where: { id: Number(id) } })
+  const patient = await prisma.patient.findFirst({
+    where: { id: Number(id), user_id: Number(session.user.id) },
+  })
   if (!patient || !patient.is_active) notFound()
 
   return (

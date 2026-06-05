@@ -19,11 +19,11 @@ function serializeHistory(patient) {
     .join('\n')
 }
 
-export const GET = withAuth(async (_request, context) => {
+export const GET = withAuth(async (_request, context, session) => {
   try {
     const { id } = await context.params
-    const patient = await prisma.patient.findUnique({
-      where: { id: Number(id) },
+    const patient = await prisma.patient.findFirst({
+      where: { id: Number(id), user_id: Number(session.user.id) },
       include: { examResults: { orderBy: { exam_date: 'asc' } } },
     })
 
