@@ -11,18 +11,25 @@ export default async function DashboardPage() {
     where: { is_active: true },
     orderBy: { created_at: 'desc' },
     include: {
-      examResults: {
-        orderBy: { created_at: 'desc' },
-        take: 1,
-      },
+      examResults: { orderBy: { created_at: 'desc' }, take: 1 },
+      _count: { select: { examResults: true } },
     },
   })
 
+  const inicioMes = new Date()
+  inicioMes.setDate(1)
+  inicioMes.setHours(0, 0, 0, 0)
+
+  const [totalExames, examesMes] = await Promise.all([
+    prisma.examResult.count(),
+    prisma.examResult.count({ where: { created_at: { gte: inicioMes } } }),
+  ])
+
   const stats = {
-    total:    patients.length,
-    alto:     0,
-    moderado: 0,
-    baixo:    0,
+    total:       patients.length,
+    totalExames,
+    examesMes,
+    comExames:   patients.filter(p => p._count.examResults > 0).length,
   }
 
   return <PatientsClient patients={patients} stats={stats} />

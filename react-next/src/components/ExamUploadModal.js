@@ -179,6 +179,7 @@ export default function ExamUploadModal({ patient, onClose }) {
           {preview && (
             <div>
               <p className="text-xs font-semibold text-text-secondary mb-2 uppercase">Preview</p>
+              {/* eslint-disable-next-line @next/next/no-img-element -- preview de data-URL local, next/image não se aplica */}
               <img src={preview} alt="Preview" className="w-full rounded-lg border border-border max-h-64 object-cover" />
             </div>
           )}

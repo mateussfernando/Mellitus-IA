@@ -46,8 +46,8 @@ export const GET = withAuth(async (_request, context) => {
     const historyText = serializeHistory(patient)
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-6-20250514',
-      max_tokens: 800,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1500,
       system: `Você é um assistente médico de apoio à decisão clínica brasileiro.
 Analise dados longitudinais de pacientes e identifique:
 1. Tendências preocupantes (valores subindo/descendo ao longo do tempo)
@@ -74,8 +74,10 @@ Analise e retorne APENAS JSON com insights clínicos.`,
     const responseText = message.content[0].text
     let insights
 
+    const cleaned = responseText.replace(/```json\s*/g, '').replace(/```/g, '').trim()
+
     try {
-      insights = JSON.parse(responseText)
+      insights = JSON.parse(cleaned)
     } catch {
       insights = {
         insights: [

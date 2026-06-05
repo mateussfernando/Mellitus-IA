@@ -7,7 +7,7 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 
 export const metadata = {
   title: 'Mellitus.IA',
-  description: 'Sistema de predição de risco de Diabetes Tipo 2',
+  description: 'Assistente médico com IA para análise de exames e acompanhamento clínico',
 }
 
 export default function RootLayout({ children }) {

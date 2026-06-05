@@ -14,23 +14,27 @@ export const POST = withAuth(async (request) => {
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const base64 = buffer.toString('base64')
-    const mediaType = file.type === 'application/pdf' ? 'image/png' : file.type
+    const isPdf = file.type === 'application/pdf'
+
+    // PDF usa bloco "document"; imagem usa bloco "image"
+    const fileBlock = isPdf
+      ? {
+          type: 'document',
+          source: { type: 'base64', media_type: 'application/pdf', data: base64 },
+        }
+      : {
+          type: 'image',
+          source: { type: 'base64', media_type: file.type, data: base64 },
+        }
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-6-20250514',
-      max_tokens: 1024,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4096,
       messages: [
         {
           role: 'user',
           content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: base64,
-              },
-            },
+            fileBlock,
             {
               type: 'text',
               text: `Este é um laudo laboratorial brasileiro. Extraia TODOS os resultados e retorne APENAS JSON válido (nada mais, sem markdown):
@@ -56,8 +60,11 @@ Retorne APENAS JSON, sem explicações.`,
     const responseText = message.content[0].text
     let extractedData
 
+    // Remove cercas de markdown caso o modelo as inclua
+    const cleaned = responseText.replace(/```json\s*/g, '').replace(/```/g, '').trim()
+
     try {
-      extractedData = JSON.parse(responseText)
+      extractedData = JSON.parse(cleaned)
     } catch {
       return Response.json(
         { detail: 'Não foi possível extrair dados do arquivo. Tente uma imagem mais clara.' },

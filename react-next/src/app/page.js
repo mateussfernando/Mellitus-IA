@@ -70,15 +70,15 @@ export default function Home() {
           </div>
 
           <h1 className="text-3xl md:text-6xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
-            <span className="hero-line block">Detecte o risco de</span>
-            <span className="hero-line block">Diabetes Tipo 2</span>
-            <span className="hero-line block text-primary">em segundos.</span>
+            <span className="hero-line block">Seu assistente</span>
+            <span className="hero-line block">médico inteligente</span>
+            <span className="hero-line block text-primary">com IA.</span>
           </h1>
 
           <p className="hero-sub text-white/60 text-base md:text-xl leading-relaxed max-w-2xl mb-7 md:mb-10">
-            Uma plataforma que analisa os dados clínicos dos seus pacientes e prevê,
-            com precisão, o risco de desenvolvimento de diabetes — apoiada por um modelo
-            de Machine Learning treinado com dados reais.
+            Escaneie laudos, acompanhe a evolução dos seus pacientes e receba insights
+            clínicos gerados por IA que cruzam todos os exames — revelando padrões que
+            passariam despercebidos.
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8 md:mb-16 w-full sm:w-auto">
@@ -104,9 +104,9 @@ export default function Home() {
           {/* Features */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-3xl">
             {[
-              { tit: 'Predição instantânea', desc: 'Risco ALTO, MODERADO ou BAIXO em tempo real', icon: 'M13 10V3L4 14h7v7l9-11h-7Z' },
-              { tit: 'Machine Learning', desc: 'Modelo XGBoost treinado com dados clínicos', icon: 'M9 12h6m-3-3v6M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z' },
-              { tit: 'Dados protegidos', desc: 'Anonimização automática conforme a LGPD', icon: 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' },
+              { tit: 'Leitura de laudos', desc: 'IA extrai os dados de PDFs e fotos automaticamente', icon: 'M13 10V3L4 14h7v7l9-11h-7Z' },
+              { tit: 'Insights por IA', desc: 'Correlações entre exames que o olhar isolado não capta', icon: 'M9 12h6m-3-3v6M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z' },
+              { tit: 'Dados protegidos', desc: 'Acompanhamento clínico em conformidade com a LGPD', icon: 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' },
             ].map(f => (
               <div key={f.tit} className="feature-card bg-white/5 border border-white/10 rounded-2xl p-5 text-left backdrop-blur-sm">
                 <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-3">
