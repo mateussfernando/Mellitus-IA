@@ -173,6 +173,11 @@ export default function Home() {
                   <InsightLine color="text-emerald-300" bg="bg-emerald-400/10" label="Sugestão"
                     text="Solicitar HbA1c para confirmar evolução para pré-diabetes." />
                 </div>
+
+                <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-white/10">
+                  <SparkIcon className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-white/40 text-[11px] font-medium">Gerado por Claude · Anthropic</span>
+                </div>
               </div>
               <div className="absolute -inset-3 bg-primary/10 blur-2xl rounded-full -z-10" />
             </div>
@@ -267,11 +272,17 @@ export default function Home() {
 
         {/* Rodapé */}
         <footer className="border-t border-white/5 mt-8">
-          <div className="text-center py-8 text-white/25 text-xs px-6">
-            Mellitus.IA © {new Date().getFullYear()} — Projeto de uso clínico e educacional.
-            <br className="sm:hidden" />
-            <span className="hidden sm:inline"> · </span>
-            Não substitui avaliação médica profissional.
+          <div className="flex flex-col items-center gap-4 py-8 px-6">
+            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+              <SparkIcon className="w-4 h-4 text-primary" />
+              <span className="text-white/60 text-xs font-semibold">Powered by Claude · Anthropic</span>
+            </div>
+            <p className="text-center text-white/25 text-xs">
+              Mellitus.IA © {new Date().getFullYear()} — Projeto de uso clínico e educacional.
+              <br className="sm:hidden" />
+              <span className="hidden sm:inline"> · </span>
+              Não substitui avaliação médica profissional.
+            </p>
           </div>
         </footer>
       </div>
@@ -285,5 +296,13 @@ function InsightLine({ color, bg, label, text }) {
       <span className={`${color} text-[10px] font-bold uppercase tracking-wide shrink-0 mt-0.5 w-16`}>{label}</span>
       <p className="text-white/70 text-xs leading-relaxed">{text}</p>
     </div>
+  )
+}
+
+function SparkIcon({ className }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" />
+    </svg>
   )
 }
