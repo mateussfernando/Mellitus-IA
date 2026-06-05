@@ -176,7 +176,7 @@ export default function Home() {
 
                 <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-white/10">
                   <SparkIcon className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-white/40 text-[11px] font-medium">Gerado por Claude · Anthropic</span>
+                  <span className="text-white/40 text-[11px] font-medium">Gerado por Claude Sonnet 4.6</span>
                 </div>
               </div>
               <div className="absolute -inset-3 bg-primary/10 blur-2xl rounded-full -z-10" />
@@ -275,7 +275,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4 py-8 px-6">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
               <SparkIcon className="w-4 h-4 text-primary" />
-              <span className="text-white/60 text-xs font-semibold">Powered by Claude · Anthropic</span>
+              <span className="text-white/60 text-xs font-semibold">Powered by Claude Sonnet 4.6 · Anthropic</span>
             </div>
             <p className="text-center text-white/25 text-xs">
               Mellitus.IA © {new Date().getFullYear()} — Projeto de uso clínico e educacional.
