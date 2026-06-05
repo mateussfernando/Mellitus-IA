@@ -78,10 +78,10 @@ export function generateAlerts(exams, patientSexo = 'FEMININO') {
 
   // Glicemia
   if (lastExam.values.glicemia != null) {
-    const status = checkThreshold('glicemia', lastExam.values.glicemia)
-    if (status === 'CRITICAL') {
-      alerts.push({ level: 'critical', message: 'Glicemia em nível crítico', param: 'glicemia' })
-    } else if (status === 'HIGH') {
+    const g = lastExam.values.glicemia
+    if (g >= 180) {
+      alerts.push({ level: 'critical', message: 'Glicemia muito elevada', param: 'glicemia' })
+    } else if (g > 99) {
       alerts.push({ level: 'warning', message: 'Glicemia elevada', param: 'glicemia' })
     }
   }
@@ -104,10 +104,10 @@ export function generateAlerts(exams, patientSexo = 'FEMININO') {
 
   // Pressão
   if (lastExam.values.pressao_sistolica != null) {
-    const status = checkThreshold('pressao_sistolica', lastExam.values.pressao_sistolica)
-    if (status === 'CRITICAL') {
-      alerts.push({ level: 'critical', message: 'Pressão arterial crítica', param: 'pressao' })
-    } else if (status === 'HIGH') {
+    const p = lastExam.values.pressao_sistolica
+    if (p >= 160) {
+      alerts.push({ level: 'critical', message: 'Pressão arterial muito elevada', param: 'pressao' })
+    } else if (p >= 140) {
       alerts.push({ level: 'warning', message: 'Pressão arterial elevada', param: 'pressao' })
     }
   }
