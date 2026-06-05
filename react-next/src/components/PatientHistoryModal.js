@@ -1,7 +1,6 @@
 'use client'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import PatientInsightsPanel from '@/components/PatientInsightsPanel'
+import { getCategory } from '@/lib/examCatalog'
 
 function calcAge(birthDate) {
   if (!birthDate) return '—'
@@ -10,7 +9,6 @@ function calcAge(birthDate) {
 }
 
 export default function PatientHistoryModal({ patient, onClose }) {
-  const [activeTab, setActiveTab] = useState('exames')
   const router = useRouter()
   const examResults = patient.examResults ?? []
 
@@ -23,8 +21,8 @@ export default function PatientHistoryModal({ patient, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <span className="text-primary font-bold text-sm">{patient.name[0]?.toUpperCase()}</span>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shrink-0 text-white font-bold text-sm">
+              {patient.name[0]?.toUpperCase()}
             </div>
             <div>
               <h2 className="text-base font-bold text-text">{patient.name}</h2>
@@ -33,52 +31,33 @@ export default function PatientHistoryModal({ patient, onClose }) {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => router.push(`/dashboard/pacientes/${patient.id}/exame`)}
-              className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-semibold transition-colors"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              Novo exame
-            </button>
-            <button onClick={onClose} className="cursor-pointer text-text-muted hover:text-text transition-colors p-1 rounded-lg hover:bg-bg">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+          <button onClick={onClose} className="cursor-pointer text-text-muted hover:text-text transition-colors p-1 rounded-lg hover:bg-bg">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-
-        {/* Abas */}
-        <div className="flex border-b border-border bg-bg px-6 shrink-0">
+        {/* Ações */}
+        <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-bg shrink-0">
           <button
-            onClick={() => setActiveTab('exames')}
-            className={`cursor-pointer px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b-2 transition-colors ${
-              activeTab === 'exames'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-text-secondary hover:text-text'
-            }`}
+            onClick={() => router.push(`/dashboard/pacientes/${patient.id}/exame`)}
+            className="cursor-pointer flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-semibold transition-colors"
           >
-            Exames
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Novo exame
           </button>
           <button
-            onClick={() => setActiveTab('insights')}
-            className={`cursor-pointer px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b-2 transition-colors ${
-              activeTab === 'insights'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-text-secondary hover:text-text'
-            }`}
+            onClick={() => router.push(`/dashboard/pacientes/${patient.id}/insights`)}
+            className="cursor-pointer flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-violet-100 text-violet-700 hover:bg-violet-600 hover:text-white text-xs font-semibold transition-colors"
           >
+            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" /></svg>
             Insights IA
           </button>
         </div>
 
-        {/* Conteúdo */}
-        {activeTab === 'exames' && (
-          <>
         {/* Lista de exames */}
         <div className="overflow-y-auto flex-1">
           {examResults.length === 0 ? (
@@ -96,32 +75,37 @@ export default function PatientHistoryModal({ patient, onClose }) {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {examResults.map((exam, idx) => (
-                <div key={exam.id} className="px-6 py-4 hover:bg-bg/60 transition-colors">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-text-muted">#{examResults.length - idx}</span>
-                      <span className="text-sm font-semibold text-text">
+              {examResults.map((exam, idx) => {
+                const entries = Object.entries(exam.values || {})
+                return (
+                  <div key={exam.id} className="px-6 py-4 hover:bg-bg/60 transition-colors">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-text-muted">#{examResults.length - idx}</span>
+                        <span className="text-sm font-semibold text-text">
+                          {getCategory(exam.exam_category)?.label || exam.exam_category}
+                        </span>
+                      </div>
+                      <span className="text-xs text-text-muted">
                         {new Date(exam.exam_date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
-                      {exam.exam_category}
-                    </span>
+                    {entries.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {entries.map(([k, v]) => (
+                          <span key={k} className="text-xs bg-bg rounded-lg px-2.5 py-1 text-text-secondary">
+                            <span className="text-text-muted">{k.replace(/_/g, ' ')}:</span>{' '}
+                            <span className="font-semibold text-text">{v}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
-          </>
-        )}
-
-        {activeTab === 'insights' && (
-          <div className="overflow-y-auto flex-1 p-6">
-            <PatientInsightsPanel patient={patient} />
-          </div>
-        )}
       </div>
     </div>
   )
