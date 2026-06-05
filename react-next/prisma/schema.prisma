@@ -35,44 +35,21 @@ model Patient {
   birth_date    DateTime
   is_active     Boolean        @default(true)
   created_at    DateTime       @default(now())
-  consultations Consultation[]
+  examResults   ExamResult[]
 }
 
-model Consultation {
-  id                     Int       @id @default(autoincrement())
-  patient_id             Int
-  patient                Patient   @relation(fields: [patient_id], references: [id])
-  created_at             DateTime  @default(now())
+model ExamResult {
+  id            Int      @id @default(autoincrement())
+  patient_id    Int
+  patient       Patient  @relation(fields: [patient_id], references: [id])
+  exam_date     DateTime
+  created_at    DateTime @default(now())
+  source_lab    String?        // "Fleury", "DASA", manual
+  source_type   String         // "pdf" | "image" | "manual"
+  exam_category String         // "hemograma" | "bioquimica" | "lipidios" | "renal" | etc.
+  values        Json           // { "hemoglobina": 12.5, "hematocrito": 38.2, ... }
+  raw_ocr_text  String?        // texto bruto extraído pelo Claude (auditoria)
 
-  glicemia               Float
-  pressao                Float
-  imc                    Float
-  idade                  Float
-  espessura_pele         Float?
-  insulina               Float?
-  historico_familiar     Float?
-  gestacoes              Float?    // null para MASCULINO
-
-  predicao_probabilidade Float?
-  predicao_risco         String?
-  predicao_data          DateTime?
-}
-
-// Dados anonimizados para re-treino do modelo (sem identificadores)
-model TrainingData {
-  id                     Int      @id @default(autoincrement())
-  created_at             DateTime @default(now())
-
-  sexo                   String?  // 'MASCULINO' | 'FEMININO'
-  gestacoes              Float?
-  glicemia               Float
-  pressao                Float
-  espessura_pele         Float?
-  insulina               Float?
-  imc                    Float
-  historico_familiar     Float?
-  idade                  Float
-
-  predicao_probabilidade Float?
-  predicao_risco         String?
+  @@index([patient_id, exam_date])
+  @@index([patient_id, exam_category])
 }

@@ -7,7 +7,7 @@ export const GET = withAuth(async () => {
       where: { is_active: true },
       orderBy: { created_at: 'desc' },
       include: {
-        consultations: {
+        examResults: {
           orderBy: { created_at: 'desc' },
           take: 1,
         },

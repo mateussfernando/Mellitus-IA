@@ -7,7 +7,7 @@ export const GET = withAuth(async (_request, context) => {
     const patient = await prisma.patient.findUnique({
       where: { id: Number(id) },
       include: {
-        consultations: { orderBy: { created_at: 'desc' } },
+        examResults: { orderBy: { created_at: 'desc' } },
       },
     })
     if (!patient || !patient.is_active) {
