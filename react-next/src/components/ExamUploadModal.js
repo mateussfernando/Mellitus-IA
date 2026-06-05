@@ -191,6 +191,12 @@ export default function ExamUploadModal({ patient, onClose }) {
               <p className="text-sm font-medium text-text">{file ? file.name : 'Clique ou arraste um arquivo'}</p>
               <input id="file-input" type="file" hidden onChange={e => handleFileSelect(e.target.files?.[0])} accept="image/*,.pdf" />
             </div>
+            <div className="flex items-center gap-1.5 mt-2">
+              <svg className="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" />
+              </svg>
+              <span className="text-[11px] text-text-muted">Leitura automática por Claude · Anthropic</span>
+            </div>
           </div>
 
           {preview && (
