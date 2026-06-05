@@ -11,20 +11,18 @@ export default async function DashboardPage() {
     where: { is_active: true },
     orderBy: { created_at: 'desc' },
     include: {
-      consultations: {
+      examResults: {
         orderBy: { created_at: 'desc' },
         take: 1,
       },
     },
   })
 
-  const lastConsultations = patients.map(p => p.consultations[0]).filter(Boolean)
-
   const stats = {
     total:    patients.length,
-    alto:     lastConsultations.filter(c => c.predicao_risco === 'ALTO').length,
-    moderado: lastConsultations.filter(c => c.predicao_risco === 'MODERADO').length,
-    baixo:    lastConsultations.filter(c => c.predicao_risco === 'BAIXO').length,
+    alto:     0,
+    moderado: 0,
+    baixo:    0,
   }
 
   return <PatientsClient patients={patients} stats={stats} />

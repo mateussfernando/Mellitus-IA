@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import RiskBadge from '@/components/RiskBadge'
 import NewPatientModal from '@/components/NewPatientModal'
 import EditPatientModal from '@/components/EditPatientModal'
-import NewConsultationModal from '@/components/NewConsultationModal'
 import PatientHistoryModal from '@/components/PatientHistoryModal'
 
 function StatCard({ label, value, color, icon }) {
@@ -22,21 +21,15 @@ function StatCard({ label, value, color, icon }) {
 }
 
 export default function PatientsClient({ patients, stats }) {
-  const [showNewPatient,   setShowNewPatient]   = useState(false)
-  const [editingPatient,   setEditingPatient]   = useState(null)
-  const [consultingPatient, setConsultingPatient] = useState(null)
-  const [historyPatient,   setHistoryPatient]   = useState(null)
+  const [showNewPatient, setShowNewPatient] = useState(false)
+  const [editingPatient, setEditingPatient] = useState(null)
+  const [historyPatient, setHistoryPatient] = useState(null)
   const router = useRouter()
 
   function refresh() { router.refresh() }
 
   function openHistory(patient) {
     setHistoryPatient(patient)
-  }
-
-  function openNewConsultation(patient) {
-    setHistoryPatient(null)
-    setConsultingPatient(patient)
   }
 
   return (
@@ -85,10 +78,10 @@ export default function PatientsClient({ patients, stats }) {
               <tr className="border-b border-border bg-bg">
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Paciente</th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Sexo</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Consultas</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Última glicemia</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Exames</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Glicemia</th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">IMC</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Último risco</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
@@ -103,7 +96,7 @@ export default function PatientsClient({ patients, stats }) {
                   </td>
                 </tr>
               ) : patients.map(p => {
-                const last = p.consultations?.[0]
+                const lastExam = p.examResults?.[0]
                 return (
                   <tr key={p.id} className="hover:bg-bg/60 transition-colors">
                     <td className="px-5 py-4">
@@ -123,33 +116,25 @@ export default function PatientsClient({ patients, stats }) {
                       </span>
                     </td>
                     <td className="px-5 py-4 text-text-secondary">
-                      <span className="font-semibold text-text">{p.consultations?.length ?? 0}</span>
-                      <span className="text-text-muted text-xs ml-1">consulta{p.consultations?.length !== 1 ? 's' : ''}</span>
+                      <span className="font-semibold text-text">{p.examResults?.length ?? 0}</span>
+                      <span className="text-text-muted text-xs ml-1">exame{p.examResults?.length !== 1 ? 's' : ''}</span>
                     </td>
                     <td className="px-5 py-4 text-text-secondary">
-                      {last ? <>{last.glicemia?.toFixed(1)} <span className="text-text-muted text-xs">mg/dL</span></> : <span className="text-text-muted">—</span>}
+                      {lastExam?.values?.glicemia != null ? <>{lastExam.values.glicemia.toFixed(1)} <span className="text-text-muted text-xs">mg/dL</span></> : <span className="text-text-muted">—</span>}
                     </td>
                     <td className="px-5 py-4 text-text-secondary">
-                      {last ? <>{last.imc?.toFixed(1)} <span className="text-text-muted text-xs">kg/m²</span></> : <span className="text-text-muted">—</span>}
+                      {lastExam?.values?.imc != null ? <>{lastExam.values.imc.toFixed(1)} <span className="text-text-muted text-xs">kg/m²</span></> : <span className="text-text-muted">—</span>}
                     </td>
                     <td className="px-5 py-4">
-                      {last ? <RiskBadge risco={last.predicao_risco} /> : <span className="text-text-muted text-xs">Sem consulta</span>}
+                      <span className="text-text-muted text-xs">—</span>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => openNewConsultation(p)}
-                          className="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-primary hover:bg-primary-dark transition-colors"
-                        >
-                          + Consulta
-                        </button>
-                        <button
-                          onClick={() => setEditingPatient(p)}
-                          className="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-semibold text-primary bg-primary-light hover:bg-primary hover:text-white transition-colors"
-                        >
-                          Editar
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => setEditingPatient(p)}
+                        className="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-semibold text-primary bg-primary-light hover:bg-primary hover:text-white transition-colors"
+                      >
+                        Editar
+                      </button>
                     </td>
                   </tr>
                 )
@@ -175,21 +160,11 @@ export default function PatientsClient({ patients, stats }) {
         />
       )}
 
-      {consultingPatient && (
-        <NewConsultationModal
-          key={consultingPatient.id}
-          patient={consultingPatient}
-          onClose={() => setConsultingPatient(null)}
-          onSuccess={() => { setConsultingPatient(null); refresh() }}
-        />
-      )}
-
       {historyPatient && (
         <PatientHistoryModal
           key={historyPatient.id}
           patient={historyPatient}
           onClose={() => setHistoryPatient(null)}
-          onNewConsultation={() => openNewConsultation(historyPatient)}
         />
       )}
     </div>
