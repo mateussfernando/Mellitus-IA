@@ -80,26 +80,26 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg">
           <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3.5 py-1.5 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-primary text-xs font-semibold tracking-wide">Powered by Machine Learning</span>
+            <span className="text-primary text-xs font-semibold tracking-wide">Powered by IA Generativa</span>
           </div>
 
           <h1 className="text-5xl font-bold text-white leading-[1.15] mb-6">
-            Predição de Risco<br />
-            de Diabetes Tipo 2<br />
+            Seu assistente<br />
+            médico inteligente<br />
             <span className="text-primary">com IA.</span>
           </h1>
 
           <p className="text-white/60 text-lg leading-relaxed mb-10">
-            Analise os dados clínicos dos seus pacientes e receba em segundos
-            uma previsão precisa de risco — gerada por um modelo XGBoost
-            treinado com dados reais.
+            Escaneie laudos, acompanhe a evolução dos seus pacientes e receba
+            insights clínicos que cruzam todos os exames — revelando padrões
+            que passariam despercebidos.
           </p>
 
           <ul className="space-y-3">
             {[
-              'Predição instantânea: ALTO, MODERADO ou BAIXO',
-              'Modelo treinado com o dataset Pima Indians Diabetes',
-              'Feature engineering automático com IMC e glicemia',
+              'Leitura automática de laudos por IA (PDF ou foto)',
+              'Análise longitudinal de mais de 80 parâmetros clínicos',
+              'Correlações entre exames que um olhar isolado não capta',
               'Histórico completo de pacientes com rastreabilidade',
             ].map(item => (
               <li key={item} className="flex items-start gap-3 text-white/70 text-sm">

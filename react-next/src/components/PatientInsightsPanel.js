@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const iconMap = {
   tendencia: (
@@ -33,48 +33,55 @@ const colorMap = {
 export default function PatientInsightsPanel({ patient }) {
   const [insights, setInsights] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function generateInsights() {
     setLoading(true)
+    setError('')
     try {
       const res = await fetch(`/api/patients/${patient.id}/insights`)
       const data = await res.json()
+      if (!res.ok) throw new Error(data.detail || 'Erro ao gerar análise.')
       setInsights(data.insights || [])
     } catch (e) {
-      console.error(e)
+      setError(e.message)
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    if (patient.id) {
-      generateInsights()
-    }
-  }, [patient.id])
-
   if (loading) {
     return (
-      <div className="p-6 text-center text-text-muted">
-        <svg className="w-5 h-5 mx-auto mb-2 animate-spin" fill="none" viewBox="0 0 24 24">
+      <div className="py-12 text-center text-text-muted">
+        <svg className="w-6 h-6 mx-auto mb-3 animate-spin text-primary" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
-        <p className="text-sm">Gerando análise com IA…</p>
+        <p className="text-sm">Analisando histórico com IA…</p>
       </div>
     )
   }
 
-  if (!insights || insights.length === 0) {
+  // Estado inicial — botão para gerar
+  if (insights === null) {
     return (
-      <div className="p-6 text-center text-text-muted">
-        <p className="text-sm">Nenhum insight disponível.</p>
+      <div className="py-12 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+          </svg>
+        </div>
+        <h3 className="text-sm font-bold text-text mb-1">Análise inteligente do histórico</h3>
+        <p className="text-xs text-text-muted max-w-sm mx-auto mb-5">
+          A IA cruza todos os exames do paciente para identificar tendências, correlações e padrões clínicos.
+        </p>
         <button
           onClick={generateInsights}
-          className="cursor-pointer mt-3 text-primary text-sm font-semibold hover:underline"
+          className="cursor-pointer px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors"
         >
-          Gerar novamente
+          Gerar análise com IA
         </button>
+        {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
       </div>
     )
   }
@@ -89,11 +96,18 @@ export default function PatientInsightsPanel({ patient }) {
             <div className={`${colors.icon} shrink-0 mt-1`}>{icon}</div>
             <div className="text-left">
               <p className={`text-sm font-medium ${colors.text}`}>{insight.descricao}</p>
-              <p className="text-xs text-text-muted mt-1">{insight.tipo}</p>
+              <p className="text-xs text-text-muted mt-1 capitalize">{insight.tipo}</p>
             </div>
           </div>
         )
       })}
+
+      <button
+        onClick={generateInsights}
+        className="cursor-pointer w-full mt-2 py-2 rounded-lg border border-border text-sm font-medium text-text-secondary hover:bg-bg transition-colors"
+      >
+        Gerar novamente
+      </button>
     </div>
   )
 }

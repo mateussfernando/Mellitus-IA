@@ -76,7 +76,7 @@ export default function Sidebar() {
             </div>
             <div>
               <p className="text-white text-sm font-bold leading-none">Mellitus.IA</p>
-              <p className="text-white/40 text-[10px] mt-0.5">Risco de Diabetes</p>
+              <p className="text-white/40 text-[10px] mt-0.5">Assistente Médico</p>
             </div>
           </div>
         </div>
