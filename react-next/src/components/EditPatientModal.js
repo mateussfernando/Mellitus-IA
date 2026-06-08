@@ -12,6 +12,7 @@ function toDateInput(val) {
 export default function EditPatientModal({ patient, onClose, onSuccess }) {
   const [form, setForm] = useState({
     name:       patient.name       ?? '',
+    cpf:        patient.cpf        ?? '',
     sexo:       patient.sexo       ?? 'FEMININO',
     birth_date: toDateInput(patient.birth_date),
   })
@@ -19,6 +20,15 @@ export default function EditPatientModal({ patient, onClose, onSuccess }) {
   const [error,   setError]   = useState('')
 
   function set(k, v) { setForm(p => ({ ...p, [k]: v })) }
+
+  function setCpf(v) {
+    const d = v.replace(/\D/g, '').slice(0, 11)
+    const masked = d
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1-$2')
+    set('cpf', masked)
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -58,6 +68,12 @@ export default function EditPatientModal({ patient, onClose, onSuccess }) {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">Nome completo</label>
             <input className={inputCls} value={form.name} onChange={e => set('name', e.target.value)} required />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">CPF</label>
+            <input className={inputCls} value={form.cpf} onChange={e => setCpf(e.target.value)}
+              placeholder="000.000.000-00" inputMode="numeric" required />
           </div>
 
           <div>

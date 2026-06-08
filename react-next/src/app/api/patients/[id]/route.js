@@ -21,8 +21,8 @@ export const GET = withAuth(async (_request, context, session) => {
 
 export const PUT = withAuth(async (request, context, session) => {
   try {
-    const { id }                  = await context.params
-    const { name, sexo, is_active } = await request.json()
+    const { id }                       = await context.params
+    const { name, cpf, sexo, is_active } = await request.json()
 
     const patient = await prisma.patient.findFirst({
       where: { id: Number(id), user_id: Number(session.user.id) },
@@ -33,12 +33,16 @@ export const PUT = withAuth(async (request, context, session) => {
 
     const data = {}
     if (name      !== undefined) data.name      = name
+    if (cpf       !== undefined) data.cpf       = String(cpf).replace(/\D/g, '')
     if (sexo      !== undefined) data.sexo      = sexo
     if (is_active !== undefined) data.is_active = is_active
 
     const updated = await prisma.patient.update({ where: { id: Number(id) }, data })
     return Response.json(updated)
   } catch (e) {
+    if (e.code === 'P2002') {
+      return Response.json({ detail: 'Já existe um paciente com esse CPF.' }, { status: 400 })
+    }
     return Response.json({ detail: e.message }, { status: 500 })
   }
 })

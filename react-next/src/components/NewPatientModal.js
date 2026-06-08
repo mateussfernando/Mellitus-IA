@@ -5,13 +5,22 @@ const inputCls = `w-full px-3 py-2 rounded-lg border border-border bg-bg text-te
   focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted outline-none`
 
 export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
-  const [form,    setForm]    = useState({ name: '', sexo: 'FEMININO', birth_date: '' })
+  const [form,    setForm]    = useState({ name: '', cpf: '', sexo: 'FEMININO', birth_date: '' })
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
 
   if (!isOpen) return null
 
   function set(k, v) { setForm(p => ({ ...p, [k]: v })) }
+
+  function setCpf(v) {
+    const d = v.replace(/\D/g, '').slice(0, 11)
+    const masked = d
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1-$2')
+    set('cpf', masked)
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -25,7 +34,7 @@ export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(res.status === 500 ? 'Erro interno. Tente novamente.' : (data.detail ?? 'Erro ao salvar.'))
-      setForm({ name: '', sexo: 'FEMININO', birth_date: '' })
+      setForm({ name: '', cpf: '', sexo: 'FEMININO', birth_date: '' })
       onSuccess(data)
     } catch (err) {
       setError(err.message)
@@ -58,6 +67,14 @@ export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
             </label>
             <input className={inputCls} value={form.name} onChange={e => set('name', e.target.value)}
               placeholder="João da Silva" required />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">
+              CPF <span className="text-red-500">*</span>
+            </label>
+            <input className={inputCls} value={form.cpf} onChange={e => setCpf(e.target.value)}
+              placeholder="000.000.000-00" inputMode="numeric" required />
           </div>
 
           <div>

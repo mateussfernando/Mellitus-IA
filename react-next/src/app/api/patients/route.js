@@ -21,13 +21,22 @@ export const GET = withAuth(async (_request, _context, session) => {
 
 export const POST = withAuth(async (request, _context, session) => {
   try {
-    const { name, sexo, birth_date } = await request.json()
+    const { name, cpf, sexo, birth_date } = await request.json()
 
     const patient = await prisma.patient.create({
-      data: { name, sexo, birth_date: new Date(birth_date), user_id: Number(session.user.id) },
+      data: {
+        name,
+        cpf: String(cpf || '').replace(/\D/g, ''),
+        sexo,
+        birth_date: new Date(birth_date),
+        user_id: Number(session.user.id),
+      },
     })
     return Response.json(patient)
   } catch (e) {
+    if (e.code === 'P2002') {
+      return Response.json({ detail: 'Já existe um paciente com esse CPF.' }, { status: 400 })
+    }
     return Response.json({ detail: e.message }, { status: 500 })
   }
 })

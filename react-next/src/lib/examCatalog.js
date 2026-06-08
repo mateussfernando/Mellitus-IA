@@ -149,3 +149,15 @@ export const EXAM_CATALOG = [
 export function getCategory(key) {
   return EXAM_CATALOG.find(c => c.key === key)
 }
+
+// Índice global de parâmetros: key -> { key, label, unit, category }
+const PARAM_INDEX = {}
+for (const c of EXAM_CATALOG) {
+  for (const p of c.params) {
+    PARAM_INDEX[p.key] = { ...p, category: c.key }
+  }
+}
+
+export function getParam(key) {
+  return PARAM_INDEX[key] || { key, label: key.replace(/_/g, ' '), unit: '' }
+}
