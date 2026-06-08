@@ -200,7 +200,7 @@ export default function ExamEntryClient({ patient }) {
               <MethodCard
                 active={mode === 'ia'}
                 onClick={() => { setMode('ia'); setError('') }}
-                title="Ler laudo com IA"
+                title="Ler laudo"
                 desc="Envie um PDF ou foto"
                 icon="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z"
                 filled
