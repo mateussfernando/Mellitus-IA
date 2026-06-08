@@ -1,24 +1,33 @@
 {
-  "name": "mellitus-ia",
-  "version": "1.0.0",
-  "description": "**Mellitus-IA** é um sistema de Inteligência Artificial focado na predição de probabilidade e risco de **Diabetes Tipo 2**. A aplicação conta com um modelo Machine Learning próprio consumido através de uma API estruturada em **FastAPI** e banco de dados **PostgreSQL** orquestrado pelo **Prisma ORM**. Todo o sistema de requisições é **protegido por JWT**.",
-  "main": "index.js",
+  "name": "react-next",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mateussfernando/Mellitus-IA.git"
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/mateussfernando/Mellitus-IA/issues"
-  },
-  "homepage": "https://github.com/mateussfernando/Mellitus-IA#readme",
   "dependencies": {
-    "onnxruntime-node": "^1.26.0"
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "gsap": "^3.15.0",
+    "next": "16.2.7",
+    "next-auth": "^5.0.0-beta.31",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4"
   }
 }
