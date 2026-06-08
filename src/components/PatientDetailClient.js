@@ -1,5 +1,8 @@
 'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import EditPatientModal from '@/components/EditPatientModal'
 import { getCategory, getParam } from '@/lib/examCatalog'
 import { checkThreshold } from '@/lib/alerts'
 
@@ -33,6 +36,8 @@ function valueClasses(status) {
 const SOURCE_LABEL = { pdf: 'PDF', image: 'Imagem', manual: 'Manual' }
 
 export default function PatientDetailClient({ patient }) {
+  const router = useRouter()
+  const [showEdit, setShowEdit] = useState(false)
   const exams = patient.examResults ?? []
   const sexo = patient.sexo
 
@@ -84,10 +89,13 @@ export default function PatientDetailClient({ patient }) {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
               Novo exame
             </Link>
-            <Link href={`/dashboard/pacientes/${patient.id}/insights`} className="cursor-pointer flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-violet-100 text-violet-700 hover:bg-violet-600 hover:text-white text-sm font-semibold transition-colors">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" /></svg>
+            <Link href={`/dashboard/pacientes/${patient.id}/insights`} className="cursor-pointer flex items-center px-4 py-2.5 rounded-xl bg-violet-100 text-violet-700 hover:bg-violet-600 hover:text-white text-sm font-semibold transition-colors">
               Análise
             </Link>
+            <button onClick={() => setShowEdit(true)} className="cursor-pointer flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-sm font-semibold transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" /></svg>
+              Editar
+            </button>
           </div>
         </div>
 
@@ -184,6 +192,14 @@ export default function PatientDetailClient({ patient }) {
           )}
         </section>
       </div>
+
+      {showEdit && (
+        <EditPatientModal
+          patient={patient}
+          onClose={() => setShowEdit(false)}
+          onSuccess={() => { setShowEdit(false); router.refresh() }}
+        />
+      )}
     </div>
   )
 }

@@ -4,12 +4,18 @@ import { useState } from 'react'
 const inputCls = `w-full px-3 py-2 rounded-lg border border-border bg-bg text-text text-sm
   focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted outline-none`
 
+const EMPTY = { name: '', cpf: '', sexo: 'FEMININO', birth_date: '', peso: '', altura: '' }
+
 export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
-  const [form,    setForm]    = useState({ name: '', cpf: '', sexo: 'FEMININO', birth_date: '' })
+  const [form,    setForm]    = useState(EMPTY)
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
 
   if (!isOpen) return null
+
+  const peso   = Number(form.peso)
+  const altura = Number(form.altura)
+  const imc    = peso > 0 && altura > 0 ? (peso / Math.pow(altura / 100, 2)).toFixed(1) : null
 
   function set(k, v) { setForm(p => ({ ...p, [k]: v })) }
 
@@ -34,7 +40,7 @@ export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(res.status === 500 ? 'Erro interno. Tente novamente.' : (data.detail ?? 'Erro ao salvar.'))
-      setForm({ name: '', cpf: '', sexo: 'FEMININO', birth_date: '' })
+      setForm(EMPTY)
       onSuccess(data)
     } catch (err) {
       setError(err.message)
@@ -105,6 +111,29 @@ export default function NewPatientModal({ isOpen, onClose, onSuccess }) {
             <input type="date" className={inputCls} value={form.birth_date}
               onChange={e => set('birth_date', e.target.value)} required />
           </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">
+                Peso (kg) <span className="text-red-500">*</span>
+              </label>
+              <input type="number" step="0.1" min="1" className={inputCls} value={form.peso}
+                onChange={e => set('peso', e.target.value)} placeholder="70" required />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">
+                Altura (cm) <span className="text-red-500">*</span>
+              </label>
+              <input type="number" step="0.1" min="30" className={inputCls} value={form.altura}
+                onChange={e => set('altura', e.target.value)} placeholder="170" required />
+            </div>
+          </div>
+
+          {imc && (
+            <p className="text-xs text-text-secondary -mt-1">
+              IMC calculado: <span className="font-bold text-text">{imc}</span> kg/m²
+            </p>
+          )}
 
           {error && (
             <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
