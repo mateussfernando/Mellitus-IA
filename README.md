@@ -1,4 +1,4 @@
-# 🩺 Mellitus.IA
+# Mellitus.IA
 
 > Assistente médico inteligente: escaneie laudos, acompanhe a evolução dos pacientes e receba análises clínicas que cruzam todos os exames — revelando padrões que passariam despercebidos.
 
@@ -6,19 +6,19 @@ Aplicação full-stack em **Next.js** que transforma exames laboratoriais (PDF, 
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-- 🔐 **Autenticação** por e-mail/senha (NextAuth + bcrypt), com sessão persistente de 30 dias.
-- 👥 **Gestão de pacientes** isolada por usuário — cada médico só vê os seus pacientes (identificados por CPF).
-- 📄 **Leitura de laudos por IA** — envie um PDF ou foto e os valores são extraídos automaticamente para conferência.
-- ✍️ **Entrada manual** — 14 categorias de exames com ~60 parâmetros e unidades pré-mapeados.
-- 📊 **Página de detalhe do paciente** — dados básicos, medidas mais recentes, mini-dashboard e histórico completo com todos os valores (com destaque para os fora da faixa de referência).
-- 🧠 **Análise clínica** — cruza todo o histórico e aponta tendências, correlações entre domínios, alertas e sugestões.
-- 🚦 **Alertas instantâneos** (sem IA) — valores fora de faixa sinalizados na hora por regras clínicas.
+- **Autenticação** por e-mail/senha (NextAuth + bcrypt), com sessão persistente de 30 dias.
+- **Gestão de pacientes** isolada por usuário — cada médico só vê os seus pacientes (identificados por CPF).
+- **Leitura de laudos por IA** — envie um PDF ou foto e os valores são extraídos automaticamente para conferência.
+- **Entrada manual** — 14 categorias de exames com ~60 parâmetros e unidades pré-mapeados.
+- **Página de detalhe do paciente** — dados básicos, medidas mais recentes, mini-dashboard e histórico completo com todos os valores (com destaque para os fora da faixa de referência).
+- **Análise clínica** — cruza todo o histórico e aponta tendências, correlações entre domínios, alertas e sugestões.
+- **Alertas instantâneos** (sem IA) — valores fora de faixa sinalizados na hora por regras clínicas.
 
 ---
 
-## 🧱 Stack
+## Stack
 
 | Camada | Tecnologia |
 |---|---|
@@ -32,37 +32,36 @@ Aplicação full-stack em **Next.js** que transforma exames laboratoriais (PDF, 
 
 ---
 
-## 🗂️ Estrutura
+## Estrutura
 
 ```
-react-next/
-├── prisma/
-│   ├── schema.prisma        # User, Patient (com CPF + user_id), ExamResult
-│   └── seed.js              # 9 pacientes de demonstração com históricos variados
-├── src/
-│   ├── app/
-│   │   ├── page.js                       # Landing page (GSAP)
-│   │   ├── login/                        # Login + cadastro
-│   │   ├── dashboard/                    # Lista de pacientes + estatísticas
-│   │   │   └── pacientes/[id]/
-│   │   │       ├── page.js                # Detalhe do paciente
-│   │   │       ├── exame/                 # Adicionar exame (IA ou manual)
-│   │   │       └── insights/              # Análise por IA
-│   │   └── api/
-│   │       ├── auth/                      # NextAuth + registro
-│   │       ├── patients/                  # CRUD de pacientes e exames
-│   │       └── exams/scan/                # OCR de laudos com IA
-│   ├── components/                        # Modais, cards e telas client-side
-│   └── lib/
-│       ├── prisma.js                      # Singleton do Prisma Client
-│       ├── middleware.js                  # withAuth + hash de senha
-│       ├── alerts.js                      # Regras clínicas / thresholds
-│       └── examCatalog.js                 # Catálogo de categorias e parâmetros
+prisma/
+├── schema.prisma            # User, Patient (com CPF + user_id), ExamResult
+└── seed.js                  # 9 pacientes de demonstração com históricos variados
+src/
+├── app/
+│   ├── page.js                       # Landing page (GSAP)
+│   ├── login/                        # Login + cadastro
+│   ├── dashboard/                    # Lista de pacientes + estatísticas
+│   │   └── pacientes/[id]/
+│   │       ├── page.js                # Detalhe do paciente
+│   │       ├── exame/                 # Adicionar exame (IA ou manual)
+│   │       └── insights/              # Análise por IA
+│   └── api/
+│       ├── auth/                      # NextAuth + registro
+│       ├── patients/                  # CRUD de pacientes e exames
+│       └── exams/scan/                # OCR de laudos com IA
+├── components/                        # Modais, cards e telas client-side
+└── lib/
+    ├── prisma.js                      # Singleton do Prisma Client
+    ├── middleware.js                  # withAuth + hash de senha
+    ├── alerts.js                      # Regras clínicas / thresholds
+    └── examCatalog.js                 # Catálogo de categorias e parâmetros
 ```
 
 ---
 
-## 🚀 Começando
+## Começando
 
 ### Pré-requisitos
 - Node.js 20+
@@ -71,12 +70,11 @@ react-next/
 
 ### 1. Instalar dependências
 ```bash
-cd react-next
 npm install
 ```
 
 ### 2. Variáveis de ambiente
-Crie `react-next/.env` com:
+Crie um arquivo `.env` na raiz com:
 ```env
 DATABASE_URL="postgresql://usuario:senha@host:5432/banco?sslmode=require"
 NEXTAUTH_SECRET="uma-string-secreta-aleatoria"
@@ -101,15 +99,15 @@ Acesse http://localhost:3000.
 
 ---
 
-## ☁️ Deploy (Vercel)
+## Deploy (Vercel)
 
-1. Importe o repositório na Vercel (diretório raiz: `react-next`).
+1. Importe o repositório na Vercel.
 2. Configure as variáveis de ambiente: `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` (com a URL de produção) e `ANTHROPIC_API_KEY` — **sem aspas**.
 3. O build roda `prisma generate && next build`.
 4. Libere o firewall do banco para as conexões da Vercel.
 
 ---
 
-## ⚠️ Aviso
+## Aviso
 
 Projeto de uso **clínico e educacional**. As análises são de apoio à decisão e **não substituem** a avaliação de um profissional de saúde. Dados de pacientes devem ser tratados em conformidade com a **LGPD (Lei 13.709/2018)**.
