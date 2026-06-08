@@ -21,7 +21,7 @@ export const GET = withAuth(async (_request, _context, session) => {
 
 export const POST = withAuth(async (request, _context, session) => {
   try {
-    const { name, cpf, sexo, birth_date } = await request.json()
+    const { name, cpf, sexo, birth_date, peso, altura } = await request.json()
 
     const patient = await prisma.patient.create({
       data: {
@@ -32,6 +32,23 @@ export const POST = withAuth(async (request, _context, session) => {
         user_id: Number(session.user.id),
       },
     })
+
+    // Registra peso/altura como um exame inicial de antropometria (com IMC calculado)
+    const pesoN   = Number(peso)
+    const alturaN = Number(altura)
+    if (pesoN > 0 && alturaN > 0) {
+      const imc = Number((pesoN / Math.pow(alturaN / 100, 2)).toFixed(1))
+      await prisma.examResult.create({
+        data: {
+          patient_id: patient.id,
+          exam_date: new Date(),
+          exam_category: 'antropometria',
+          values: { peso: pesoN, altura: alturaN, imc },
+          source_type: 'manual',
+        },
+      })
+    }
+
     return Response.json(patient)
   } catch (e) {
     if (e.code === 'P2002') {

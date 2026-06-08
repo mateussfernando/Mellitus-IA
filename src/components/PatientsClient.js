@@ -2,7 +2,6 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import NewPatientModal from '@/components/NewPatientModal'
-import EditPatientModal from '@/components/EditPatientModal'
 import { generateAlerts } from '@/lib/alerts'
 
 function calcAge(birthDate) {
@@ -39,7 +38,6 @@ function StatCard({ label, value, gradient, ring, icon }) {
 
 export default function PatientsClient({ patients, stats }) {
   const [showNewPatient, setShowNewPatient] = useState(false)
-  const [editingPatient, setEditingPatient] = useState(null)
   const [query, setQuery] = useState('')
   const router = useRouter()
 
@@ -168,26 +166,13 @@ export default function PatientsClient({ patients, stats }) {
                         </span>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end">
                           <button
-                            onClick={() => router.push(`/dashboard/pacientes/${p.id}/exame`)}
-                            className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-primary hover:bg-primary-dark transition-colors"
+                            onClick={() => router.push(`/dashboard/pacientes/${p.id}`)}
+                            className="cursor-pointer flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-primary hover:bg-primary-dark transition-colors shadow-sm"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                            Exame
-                          </button>
-                          <button
-                            onClick={() => router.push(`/dashboard/pacientes/${p.id}/insights`)}
-                            className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-violet-700 bg-violet-100 hover:bg-violet-600 hover:text-white transition-colors"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.5l1.9 5.8a4 4 0 0 0 2.5 2.5L22.2 12l-5.8 1.9a4 4 0 0 0-2.5 2.5L12 22.2l-1.9-5.8a4 4 0 0 0-2.5-2.5L1.8 12l5.8-1.9a4 4 0 0 0 2.5-2.5L12 2.5z" /></svg>
-                            Análise
-                          </button>
-                          <button
-                            onClick={() => setEditingPatient(p)}
-                            className="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary bg-bg hover:bg-border transition-colors"
-                          >
-                            Editar
+                            Ver detalhes
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                           </button>
                         </div>
                       </td>
@@ -206,15 +191,6 @@ export default function PatientsClient({ patients, stats }) {
         onClose={() => setShowNewPatient(false)}
         onSuccess={() => { setShowNewPatient(false); refresh() }}
       />
-
-      {editingPatient && (
-        <EditPatientModal
-          key={editingPatient.id}
-          patient={editingPatient}
-          onClose={() => setEditingPatient(null)}
-          onSuccess={() => { setEditingPatient(null); refresh() }}
-        />
-      )}
     </div>
   )
 }
