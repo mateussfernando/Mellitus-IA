@@ -34,7 +34,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     maxAge: 30 * 24 * 60 * 60,  // 30 dias — mantém o login até o usuário sair ou expirar
     updateAge: 24 * 60 * 60,    // renova o token uma vez por dia de uso
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  // trustHost é necessário em produção (Vercel) para o NextAuth confiar no host
+  trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
   callbacks: {
     jwt({ token, user }) {
       if (user) {

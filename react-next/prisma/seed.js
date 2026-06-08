@@ -102,9 +102,11 @@ async function main() {
   await prisma.patient.deleteMany({ where: { user_id: user.id } })
 
   let totalExames = 0
-  for (const p of PACIENTES) {
+  for (let i = 0; i < PACIENTES.length; i++) {
+    const p = PACIENTES[i]
+    const cpf = String(11111111100 + i) // CPF fictício único (11 dígitos) só para demo
     const patient = await prisma.patient.create({
-      data: { name: p.name, sexo: p.sexo, birth_date: birthFromAge(p.age), user_id: user.id },
+      data: { name: p.name, cpf, sexo: p.sexo, birth_date: birthFromAge(p.age), user_id: user.id },
     })
 
     for (const ex of p.exams) {

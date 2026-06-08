@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import NewPatientModal from '@/components/NewPatientModal'
 import EditPatientModal from '@/components/EditPatientModal'
-import PatientHistoryModal from '@/components/PatientHistoryModal'
 import { generateAlerts } from '@/lib/alerts'
 
 function calcAge(birthDate) {
@@ -41,7 +40,6 @@ function StatCard({ label, value, gradient, ring, icon }) {
 export default function PatientsClient({ patients, stats }) {
   const [showNewPatient, setShowNewPatient] = useState(false)
   const [editingPatient, setEditingPatient] = useState(null)
-  const [historyPatient, setHistoryPatient] = useState(null)
   const [query, setQuery] = useState('')
   const router = useRouter()
 
@@ -60,7 +58,7 @@ export default function PatientsClient({ patients, stats }) {
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-text">Pacientes</h1>
-          <p className="text-sm text-text-secondary mt-1">Acompanhamento clínico e análise por IA</p>
+          <p className="text-sm text-text-secondary mt-1">Acompanhamento clínico e análise </p>
         </div>
         <button
           onClick={() => setShowNewPatient(true)}
@@ -144,7 +142,7 @@ export default function PatientsClient({ patients, stats }) {
                   return (
                     <tr key={p.id} className="hover:bg-bg/60 transition-colors">
                       <td className="px-5 py-4">
-                        <button onClick={() => setHistoryPatient(p)} className="cursor-pointer text-left hover:text-primary transition-colors">
+                        <button onClick={() => router.push(`/dashboard/pacientes/${p.id}`)} className="cursor-pointer text-left hover:text-primary transition-colors">
                           <p className="font-medium text-text">{p.name}</p>
                           <p className="text-xs text-text-muted mt-0.5">{calcAge(p.birth_date)} anos · {new Date(p.birth_date).toLocaleDateString('pt-BR')}</p>
                         </button>
@@ -215,14 +213,6 @@ export default function PatientsClient({ patients, stats }) {
           patient={editingPatient}
           onClose={() => setEditingPatient(null)}
           onSuccess={() => { setEditingPatient(null); refresh() }}
-        />
-      )}
-
-      {historyPatient && (
-        <PatientHistoryModal
-          key={historyPatient.id}
-          patient={historyPatient}
-          onClose={() => setHistoryPatient(null)}
         />
       )}
     </div>
