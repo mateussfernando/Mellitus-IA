@@ -85,16 +85,16 @@ export default function LoginPage() {
           </h1>
 
           <p className="text-white/60 text-lg leading-relaxed mb-10">
-            Escaneie laudos, acompanhe a evolução dos seus pacientes e receba
-            análises clínicas que cruzam todos os exames — revelando padrões
-            que passariam despercebidos.
+            Escaneie laudos e acompanhe seus pacientes. Um modelo de Machine Learning
+            classifica o risco de diabetes e a IA valida o resultado, cruzando todos
+            os exames — revelando padrões que passariam despercebidos.
           </p>
 
           <ul className="space-y-3">
             {[
+              'Classificação de risco por Machine Learning (baixo, médio, alto)',
               'Leitura automática de laudos por IA (PDF ou foto)',
-              'Análise longitudinal de mais de 80 parâmetros clínicos',
-              'Correlações entre exames que um olhar isolado não capta',
+              'Análise clínica que cruza mais de 80 parâmetros e valida o risco',
               'Histórico completo de pacientes com rastreabilidade',
             ].map(item => (
               <li key={item} className="flex items-start gap-3 text-white/70 text-sm">
