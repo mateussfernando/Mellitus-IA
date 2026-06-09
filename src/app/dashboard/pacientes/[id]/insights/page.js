@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { redirect, notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import PatientInsightsClient from '@/components/PatientInsightsClient'
+import { preverRisco } from '@/lib/riskModel'
 
 export default async function InsightsPage({ params }) {
   const session = await auth()
@@ -14,8 +15,11 @@ export default async function InsightsPage({ params }) {
   })
   if (!patient || !patient.is_active) notFound()
 
+  const risco = preverRisco(patient, patient.examResults)
+
   return (
     <PatientInsightsClient
+      risco={risco}
       patient={{
         id: patient.id,
         name: patient.name,

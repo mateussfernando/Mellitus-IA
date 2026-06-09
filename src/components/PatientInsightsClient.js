@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import MlRiskBadge from '@/components/MlRiskBadge'
 import { getCategory } from '@/lib/examCatalog'
 
 function calcAge(birthDate) {
@@ -10,6 +11,7 @@ function calcAge(birthDate) {
 }
 
 const TIPO_ICON = {
+  validacao:  'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
   tendencia:  'M13 7h8m0 0v8m0-8L5.343 19.657',
   correlacao: 'M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244',
   alerta:     'M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z',
@@ -22,7 +24,7 @@ const URGENCIA = {
   critico: { accent: 'bg-red-500',     chip: 'bg-red-50 text-red-700',       ring: 'bg-red-100 text-red-600' },
 }
 
-export default function PatientInsightsClient({ patient }) {
+export default function PatientInsightsClient({ patient, risco }) {
   const exams = patient.examResults ?? []
   const [insights, setInsights] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -74,6 +76,9 @@ export default function PatientInsightsClient({ patient }) {
             </p>
           </div>
         </div>
+
+        {/* Risco do modelo de Machine Learning (a IA generativa valida abaixo) */}
+        {risco && <div className="mb-8"><MlRiskBadge {...risco} /></div>}
 
         {/* Sem exames */}
         {exams.length === 0 ? (
