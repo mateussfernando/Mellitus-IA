@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import EditPatientModal from '@/components/EditPatientModal'
 import EditExamModal from '@/components/EditExamModal'
+import MlRiskBadge from '@/components/MlRiskBadge'
 import { getCategory, getParam } from '@/lib/examCatalog'
 import { checkThreshold } from '@/lib/alerts'
 
@@ -36,7 +37,7 @@ function valueClasses(status) {
 
 const SOURCE_LABEL = { pdf: 'PDF', image: 'Imagem', manual: 'Manual' }
 
-export default function PatientDetailClient({ patient }) {
+export default function PatientDetailClient({ patient, risco }) {
   const router = useRouter()
   const [showEdit, setShowEdit]       = useState(false)
   const [editingExam, setEditingExam] = useState(null)
@@ -115,6 +116,9 @@ export default function PatientDetailClient({ patient }) {
             </button>
           </div>
         </div>
+
+        {/* Risco do modelo de Machine Learning */}
+        {risco && <MlRiskBadge {...risco} />}
 
         {/* Dados básicos */}
         <section>

@@ -1,6 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk'
 import prisma from '@/lib/prisma'
 import { withAuth } from '@/lib/middleware'
+import { preverRisco } from '@/lib/riskModel'
+
+const NIVEL_PT = { BAIXO: 'BAIXO', MEDIO: 'MODERADO', ALTO: 'ALTO' }
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -44,12 +47,18 @@ export const GET = withAuth(async (_request, context, session) => {
     }
 
     const historyText = serializeHistory(patient)
+    const risco = preverRisco(patient, patient.examResults)
+    const blocoRisco = risco.disponivel
+      ? `\nUm modelo de Machine Learning (Random Forest, treinado com dados de ambos os sexos) classificou o risco de diabetes tipo 2 deste paciente como ${NIVEL_PT[risco.nivel]} (${Math.round(risco.probabilidade * 100)}% de probabilidade).`
+      : ''
 
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1500,
       system: `Você é um assistente médico de apoio à decisão clínica brasileiro.
+Um modelo de Machine Learning classifica o risco de diabetes; o seu papel inclui VALIDAR esse resultado e complementar com insights.
 Analise dados longitudinais de pacientes e identifique:
+0. Validação: comente se concorda com a classificação de risco do modelo de ML à luz dos exames (concorda/discorda e por quê) — use o tipo "validacao".
 1. Tendências preocupantes (valores subindo/descendo ao longo do tempo)
 2. Correlações entre domínios (ex: LDL alto + TSH alto = hipotireoidismo causando dislipidemia)
 3. Padrões de síndrome metabólica, DRC progressiva, anemia, etc.
@@ -58,15 +67,16 @@ Analise dados longitudinais de pacientes e identifique:
 
 Seja conciso (máx 5 pontos). Nunca faça diagnóstico definitivo.
 Use termos médicos em português brasileiro.
-Responda APENAS em JSON válido (sem markdown, sem explicações): { "insights": [{ "tipo": "tendencia|correlacao|alerta|sugestao", "descricao": string, "urgencia": "info|aviso|critico" }] }`,
+Responda APENAS em JSON válido (sem markdown, sem explicações): { "insights": [{ "tipo": "validacao|tendencia|correlacao|alerta|sugestao", "descricao": string, "urgencia": "info|aviso|critico" }] }`,
       messages: [
         {
           role: 'user',
           content: `Paciente: ${patient.name}, ${patient.sexo}, idade aproximada.
 Histórico de exames:
 ${historyText}
+${blocoRisco}
 
-Analise e retorne APENAS JSON com insights clínicos.`,
+Se houver classificação do modelo de ML, comece validando-a. Depois retorne APENAS JSON com os insights clínicos.`,
         },
       ],
     })
