@@ -114,11 +114,11 @@ export default function LoginPage() {
       </div>
 
       {/* ── Lado direito (formulário) ──────────────────── */}
-      <div className="w-full md:w-[420px] min-h-screen md:h-screen bg-primary flex flex-col">
-        <div className={`flex flex-col flex-1 justify-center px-6 md:px-10 ${mode === 'register' ? 'py-8 md:py-6' : 'py-12 md:py-14'}`}>
+      <div className="w-full md:w-[420px] min-h-screen md:h-screen bg-primary overflow-y-auto">
+        <div className="min-h-screen md:min-h-full flex flex-col justify-center px-6 md:px-10 py-8">
 
           {/* Cabeçalho */}
-          <div className="mb-8">
+          <div className="mb-6">
             <h2 className="text-2xl font-bold text-white">
               {mode === 'login' ? 'Boas-vindas!' : 'Criar conta'}
             </h2>
@@ -189,25 +189,19 @@ export default function LoginPage() {
                 <input type="password" value={reg.confirm} onChange={e => setR('confirm', e.target.value)}
                   placeholder="••••••••" required minLength={6} className={inputCls} />
               </div>
-              {/* Aviso LGPD */}
-              <div className="bg-white/10 border border-white/20 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <input
-                    id="lgpd"
-                    type="checkbox"
-                    required
-                    className="mt-0.5 w-4 h-4 shrink-0 accent-white cursor-pointer"
-                  />
-                  <label htmlFor="lgpd" className="text-white/80 text-xs leading-relaxed cursor-pointer">
-                    Li e concordo que os <strong className="text-white">dados clínicos anonimizados</strong> dos
-                    pacientes cadastrados (glicemia, IMC, pressão arterial, etc.) poderão ser utilizados para
-                    aprimoramento contínuo do modelo de IA. <strong className="text-white">Dados pessoais
-                    identificáveis (nome, CPF) nunca são compartilhados</strong>, em conformidade com a{' '}
-                    <strong className="text-white">Lei 13.709/2018 (LGPD)</strong>, Art. 11, que regula o
-                    tratamento de dados de saúde.
-                  </label>
-                </div>
-              </div>
+              {/* Aviso LGPD — caixa inteira clicável (melhor toque no mobile) */}
+              <label className="flex items-start gap-3 bg-white/10 border border-white/20 rounded-xl p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  required
+                  className="mt-0.5 w-5 h-5 shrink-0 accent-white cursor-pointer"
+                />
+                <span className="text-white/80 text-xs leading-relaxed">
+                  Concordo que <strong className="text-white">dados clínicos anonimizados</strong> sejam usados para
+                  aprimorar o modelo. Dados pessoais (nome, CPF) <strong className="text-white">nunca são
+                  compartilhados</strong> — conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong>.
+                </span>
+              </label>
 
               {error && <ErrorMsg>{error}</ErrorMsg>}
               <button type="submit" disabled={loading} className={btnCls}>
