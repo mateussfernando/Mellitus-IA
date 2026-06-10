@@ -23,6 +23,51 @@ const STEPS = [
   },
 ]
 
+const PLANS = [
+  {
+    name: 'Free',
+    price: 'R$ 0',
+    period: '/mês',
+    desc: 'Para experimentar a ferramenta.',
+    items: [
+      'Até 3 pacientes',
+      '5 leituras de laudo por IA / mês',
+      '3 análises de insights por IA / mês',
+      'Entrada manual ilimitada',
+      'Risco de diabetes por Machine Learning',
+      'Histórico e gráficos de evolução',
+    ],
+    highlight: false,
+  },
+  {
+    name: 'Pro',
+    price: 'R$ 79',
+    period: '/mês',
+    desc: 'Para o médico clínico no dia a dia.',
+    items: [
+      'Pacientes ilimitados',
+      '50 leituras de laudo por IA / mês',
+      '30 análises de insights por IA / mês',
+      'Histórico completo + alertas instantâneos',
+      'Risco de diabetes por Machine Learning',
+    ],
+    highlight: true,
+  },
+  {
+    name: 'Max',
+    price: 'R$ 199',
+    period: '/mês',
+    desc: 'Para clínicas com múltiplos médicos.',
+    items: [
+      'Tudo do Pro, sem limites de IA',
+      'Múltiplos usuários por conta',
+      'Fila de processamento prioritária',
+      'Suporte prioritário',
+    ],
+    highlight: false,
+  },
+]
+
 const FEATURES = [
   {
     tit: 'Leitura de laudos por IA',
@@ -256,6 +301,58 @@ export default function Home() {
                 </span>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Planos */}
+        <section className="px-5 md:px-16 max-w-7xl mx-auto py-16 md:py-24">
+          <div className="reveal text-center mb-12 md:mb-16">
+            <p className="text-primary text-xs font-bold uppercase tracking-widest mb-3">Planos</p>
+            <h2 className="text-2xl md:text-4xl font-bold text-white">Escolha o plano ideal para você</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 items-stretch">
+            {PLANS.map(p => (
+              <div
+                key={p.name}
+                className={`reveal flex flex-col rounded-2xl p-6 border ${
+                  p.highlight
+                    ? 'bg-primary/10 border-primary/40 shadow-lg shadow-primary/20'
+                    : 'bg-white/[0.03] border-white/10'
+                }`}
+              >
+                {p.highlight && (
+                  <span className="self-start mb-3 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-primary text-white">
+                    Mais popular
+                  </span>
+                )}
+                <h3 className="text-white font-bold text-xl mb-1">{p.name}</h3>
+                <p className="text-white/50 text-sm mb-4">{p.desc}</p>
+                <div className="mb-5">
+                  <span className="text-3xl md:text-4xl font-bold text-white">{p.price}</span>
+                  <span className="text-white/50 text-sm">{p.period}</span>
+                </div>
+                <ul className="space-y-2.5 mb-6 flex-1">
+                  {p.items.map(item => (
+                    <li key={item} className="flex items-start gap-2.5 text-sm text-white/70">
+                      <svg className="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/login"
+                  className={`cursor-pointer text-center px-5 py-3 rounded-xl font-semibold text-sm transition-colors ${
+                    p.highlight
+                      ? 'bg-primary hover:bg-primary-dark text-white'
+                      : 'bg-white/5 border border-white/15 text-white/90 hover:bg-white/10'
+                  }`}
+                >
+                  Começar
+                </Link>
+              </div>
+            ))}
           </div>
         </section>
 
