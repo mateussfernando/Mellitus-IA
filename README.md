@@ -12,8 +12,10 @@ Aplicação full-stack em **Next.js** que transforma exames laboratoriais (PDF, 
 - **Gestão de pacientes** isolada por usuário — cada médico só vê os seus pacientes (identificados por CPF).
 - **Leitura de laudos por IA** — envie um PDF ou foto e os valores são extraídos automaticamente para conferência.
 - **Entrada manual** — 14 categorias de exames com ~60 parâmetros e unidades pré-mapeados.
+- **Edição e remoção de exames** — corrija ou remova exames já cadastrados a qualquer momento.
 - **Página de detalhe do paciente** — dados básicos, medidas mais recentes, mini-dashboard e histórico completo com todos os valores (com destaque para os fora da faixa de referência).
-- **Análise clínica** — cruza todo o histórico e aponta tendências, correlações entre domínios, alertas e sugestões.
+- **Risco de diabetes por Machine Learning** — modelo Random Forest (treinado em JS, sem Python/ONNX) classifica o risco de diabetes tipo 2 em BAIXO/MÉDIO/ALTO.
+- **Análise clínica por IA** — cruza todo o histórico, valida a classificação de risco do modelo de ML e aponta tendências, correlações entre domínios, alertas e sugestões.
 - **Alertas instantâneos** (sem IA) — valores fora de faixa sinalizados na hora por regras clínicas.
 
 ---
@@ -25,8 +27,9 @@ Aplicação full-stack em **Next.js** que transforma exames laboratoriais (PDF, 
 | Frontend / Backend | Next.js 16 (App Router) + React 19 |
 | Estilo | Tailwind CSS v4 |
 | Autenticação | NextAuth v5 (JWT) + bcryptjs |
-| ORM / Banco | Prisma 6 + PostgreSQL (Azure) |
-| IA | Claude (Anthropic) via `@anthropic-ai/sdk` — visão para OCR e análise de texto |
+| ORM / Banco | Prisma 6 + PostgreSQL (Azure ou local) |
+| Machine Learning | Random Forest (`ml-random-forest`), treinado e executado em JavaScript |
+| IA generativa | Claude (Anthropic) via `@anthropic-ai/sdk` — visão para OCR e análise de texto |
 | Animações | GSAP (landing page) |
 | Deploy | Vercel |
 
@@ -35,6 +38,9 @@ Aplicação full-stack em **Next.js** que transforma exames laboratoriais (PDF, 
 ## Estrutura
 
 ```
+model/
+├── train.js                  # Treina o Random Forest a partir do dataset Kaggle
+└── diabetes_prediction_dataset.csv  # Dataset de treino (não versionado)
 prisma/
 ├── schema.prisma            # User, Patient (com CPF + user_id), ExamResult
 └── seed.js                  # 9 pacientes de demonstração com históricos variados
@@ -45,8 +51,8 @@ src/
 │   ├── dashboard/                    # Lista de pacientes + estatísticas
 │   │   └── pacientes/[id]/
 │   │       ├── page.js                # Detalhe do paciente
-│   │       ├── exame/                 # Adicionar exame (IA ou manual)
-│   │       └── insights/              # Análise por IA
+│   │       ├── exame/                 # Adicionar/editar exame (IA ou manual)
+│   │       └── insights/              # Análise por IA + risco de ML
 │   └── api/
 │       ├── auth/                      # NextAuth + registro
 │       ├── patients/                  # CRUD de pacientes e exames
@@ -56,7 +62,9 @@ src/
     ├── prisma.js                      # Singleton do Prisma Client
     ├── middleware.js                  # withAuth + hash de senha
     ├── alerts.js                      # Regras clínicas / thresholds
-    └── examCatalog.js                 # Catálogo de categorias e parâmetros
+    ├── examCatalog.js                 # Catálogo de categorias e parâmetros
+    ├── riskModel.js                   # Inferência do modelo de risco (Random Forest)
+    └── risk_model.json                # Modelo treinado (gerado por `npm run train`)
 ```
 
 ---
@@ -83,6 +91,9 @@ ANTHROPIC_API_KEY="sk-ant-..."
 ```
 > Caracteres especiais na senha (ex.: `@`) devem usar URL-encoding (`%40`). No painel da Vercel, informe os valores **sem aspas**.
 
+> Para desenvolvimento local com PostgreSQL instalado na máquina, use:
+> `DATABASE_URL="postgresql://postgres:senha@localhost:5432/mellitus-ia"`
+
 ### 3. Banco de dados
 ```bash
 npx prisma db push      # cria as tabelas a partir do schema
@@ -96,6 +107,21 @@ npm run dev
 Acesse http://localhost:3000.
 
 > Os pacientes de demonstração são associados ao **primeiro usuário** do banco. Cadastre-se e rode o seed, ou faça login com a conta dona dos dados.
+
+---
+
+## Modelo de risco (Machine Learning)
+
+O risco de diabetes tipo 2 é classificado por um **Random Forest** treinado em JavaScript (`ml-random-forest`), sem dependências de Python ou ONNX. O modelo já vem treinado em `src/lib/risk_model.json` e é carregado em runtime por `src/lib/riskModel.js`.
+
+Para retreinar com o dataset do Kaggle ["Diabetes Prediction Dataset"](https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset) (Mohammed Mustafa):
+
+1. Baixe o CSV e salve em `model/diabetes_prediction_dataset.csv`.
+2. Rode:
+```bash
+npm run train
+```
+Isso gera um novo `src/lib/risk_model.json` com métricas (acurácia, AUC, recall, precisão, F1) impressas no console.
 
 ---
 
